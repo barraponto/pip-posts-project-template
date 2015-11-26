@@ -31,7 +31,7 @@ class TestAPI(unittest.TestCase):
         response = self.client.get('/api/posts')
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.mime, 'application/json')
+        self.assertEqual(response.mimetype, 'application/json')
 
         data = json.loads(response.data.decode('ascii'))
         self.assertEqual(data, [])
