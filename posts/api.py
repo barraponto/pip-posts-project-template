@@ -10,5 +10,6 @@ from .database import session
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
-    data= json.dumps([])
-    return Response(data, 200, mimetype='application/json')
+    data = session.query(models.Post).order_by(models.Post.id)
+    return Response(json.dumps([post.as_dict() for post in data]),
+                    200, mimetype='application/json')
