@@ -57,6 +57,31 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(response_post_B['title'], post_B.title)
         self.assertEqual(response_post_B['body'], post_B.body)
 
+    def test_get_post(self):
+        post_A = models.Post(title='Example A', body='Body A')
+        post_B = models.Post(title='Example B', body='Body B')
+
+        session.add_all([post_A, post_B])
+        session.commit()
+
+        response = self.client.get('/api/posts/{}'.format(post_B.id))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, 'application/json')
+
+        post = json.loads(response.data.decode('ascii'))
+        self.assertEqual(post['title'], post_B.title)
+        self.assertEqual(post['body'], post_B.body)
+
+    def test_get_non_existent_post(self):
+        response = self.client.get('/api/posts/{}'.format(666))
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.mimetype, 'application/json')
+
+        data = json.loads(response.data.decode('ascii'))
+        self.assertEqual(data['message'], '')
+
 
 
 if __name__ == "__main__":
