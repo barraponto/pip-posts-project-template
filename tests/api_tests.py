@@ -92,6 +92,17 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(data['message'],
                          'Could not find post with id {}'.format(666))
 
+    def test_unsupported_accept_header(self):
+        response = self.client.get(
+            '/api/posts',
+            headers=[("Accept", "application/xml")])
+
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.mimetype, "application/json")
+
+        data = json.loads(response.data.decode('ascii'))
+        self.assertEqual(data["message"],
+                         "Request must accept application/json data")
 
 
 if __name__ == "__main__":
