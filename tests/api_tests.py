@@ -11,6 +11,7 @@ from posts import app
 from posts import models
 from posts.database import Base, engine, session
 
+
 class TestAPI(unittest.TestCase):
     """ Tests for the posts API """
 
@@ -28,7 +29,9 @@ class TestAPI(unittest.TestCase):
         Base.metadata.drop_all(engine)
 
     def test_get_empty_posts(self):
-        response = self.client.get('/api/posts')
+        response = self.client.get(
+            '/api/posts',
+            headers=[("Accept", "application/json")])
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, 'application/json')
@@ -43,7 +46,9 @@ class TestAPI(unittest.TestCase):
         session.add_all([post_A, post_B])
         session.commit()
 
-        response = self.client.get('/api/posts')
+        response = self.client.get(
+            '/api/posts',
+            headers=[("Accept", "application/json")])
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, 'application/json')
@@ -64,7 +69,9 @@ class TestAPI(unittest.TestCase):
         session.add_all([post_A, post_B])
         session.commit()
 
-        response = self.client.get('/api/posts/{}'.format(post_B.id))
+        response = self.client.get(
+            '/api/posts/{}'.format(post_B.id),
+            headers=[("Accept", "application/json")])
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, 'application/json')
@@ -74,7 +81,9 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(post['body'], post_B.body)
 
     def test_get_non_existent_post(self):
-        response = self.client.get('/api/posts/{}'.format(666))
+        response = self.client.get(
+            '/api/posts/{}'.format(666),
+            headers=[("Accept", "application/json")])
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.mimetype, 'application/json')
