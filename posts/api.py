@@ -16,6 +16,10 @@ def get_posts():
     if title_like:
         data = data.filter(models.Post.title.contains(title_like))
 
+    body_like = request.args.get('body_like')
+    if body_like:
+        data = data.filter(models.Post.body.contains(body_like))
+
     data = data.order_by(models.Post.id)
     return Response(json.dumps([post.as_dict() for post in data]),
                     200, mimetype='application/json')
