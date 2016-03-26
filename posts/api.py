@@ -1,6 +1,6 @@
 import json
 
-from flask import Response
+from flask import Response, request
 
 from . import models
 from . import decorators
@@ -10,7 +10,13 @@ from .database import session
 @app.route('/api/posts', methods=['GET'])
 @decorators.accept("application/json")
 def get_posts():
-    data = session.query(models.Post).order_by(models.Post.id)
+    data = session.query(models.Post)
+
+    title_like = request.args.get('title_like')
+    if title_like:
+        data = data.filter(models.Post.title.contains(title_like))
+
+    data = data.order_by(models.Post.id)
     return Response(json.dumps([post.as_dict() for post in data]),
                     200, mimetype='application/json')
 
